@@ -14,10 +14,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      # - name: Configure Git
-      #   run: |
-      #     git config user.name "$GITHUB_ACTOR"
-      #     git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Update my-file.json description
+        uses: jossef/action-set-json-field@v1
+        with:
+          file: manifest.json
+          field: download
+          value: "https://github.com/mdekrey/actions-testing/releases/download/${{github.ref_name}}/dnd4e.zip"
 
       - name: 'Make Zip'
         run: |
@@ -26,7 +33,19 @@ jobs:
           cp -r folder/ folder2/ output/dnd4e
           cd output
           zip -r ../dnd4e.zip dnd4e
+
       - uses: ncipollo/release-action@v1
         with:
-          artifacts: "dnd4e.zip"
+          artifacts: "dnd4e.zip,manifest.json"
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 'Change and update'
+        run: |
+          mv manifest.json ../
+          git reset --hard
+          rm -rf output/
+          git checkout gh-pages
+          cp ../manifest.json dnd4e.json
+          git add dnd4e.json
+          git commit -m "Release ${{github.ref_name}}"
+          git push origin HEAD:gh-pages

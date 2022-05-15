@@ -3,7 +3,7 @@ name: Release Zip
 on:
   push:
     branches:
-      - main
+      - testing
 
 jobs:
   release:

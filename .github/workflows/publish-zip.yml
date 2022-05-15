@@ -21,12 +21,13 @@ jobs:
 
       - name: 'Make Zip'
         run: |
-          mkdir dnd4e
-          cp -r folder/ folder2/ dnd4e
+          mkdir output
+          mkdir output/dnd4e
+          cp -r folder/ folder2/ output/dnd4e
         # zip -r dnd4e.zip dnd4e
       - name: 'Upload Zip'
         uses: actions/upload-artifact@v2
         with:
           name: system-zip
-          path: ./dnd4e
+          path: ./output
           retention-days: 1

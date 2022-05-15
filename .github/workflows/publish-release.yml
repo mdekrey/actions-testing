@@ -1,0 +1,32 @@
+name: Release Zip
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      # - name: Configure Git
+      #   run: |
+      #     git config user.name "$GITHUB_ACTOR"
+      #     git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: 'Make Zip'
+        run: |
+          mkdir output
+          mkdir output/dnd4e
+          cp -r folder/ folder2/ output/dnd4e
+          cd output
+          zip -r ../dnd4e.zip dnd4e
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "dnd4e.zip"
+          token: ${{ secrets.GITHUB_TOKEN }}
